@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import API from "../services/api";
-import { useNavigate } from "react-router-dom";
 
 function ProductPage() {
   const { id } = useParams();
+
   const navigate = useNavigate();
+
   const [product, setProduct] = useState(null);
 
   // Fetch Product
@@ -45,14 +46,36 @@ function ProductPage() {
   };
 
   // Buy Now
-  const handleBuyNow = () => {
-    toast.success("Order Placed Successfully 🎉");
+  const handleBuyNow = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      // add product to cart first
+      await API.post(
+        "/cart",
+        {
+          product: product._id,
+          quantity: 1,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      navigate("/checkout");
+
+    } catch (error) {
+      toast.error("Please Login");
+    }
   };
 
   useEffect(() => {
     fetchProduct();
   }, []);
 
+  // Loading
   if (!product) {
     return (
       <div className="min-h-screen flex justify-center items-center">
@@ -66,46 +89,57 @@ function ProductPage() {
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center p-10">
 
-      <div className="bg-white p-10 rounded-2xl shadow-2xl max-w-4xl w-full grid md:grid-cols-2 gap-10">
+      <div className="bg-white p-10 rounded-2xl shadow-2xl max-w-5xl w-full grid md:grid-cols-2 gap-10">
 
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-96 object-contain rounded-2xl bg-white"
-        />
+        {/* Product Image */}
+        <div className="flex justify-center items-center">
 
-        <div>
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-full h-96 object-contain rounded-2xl bg-white"
+          />
+
+        </div>
+
+        {/* Product Details */}
+        <div className="flex flex-col justify-center">
 
           <h1 className="text-4xl font-bold">
             {product.name}
           </h1>
 
-          <p className="text-gray-600 mt-5 text-lg">
+          <p className="text-gray-600 mt-5 text-lg leading-8">
             {product.description}
           </p>
 
-          <h2 className="text-3xl font-bold mt-6">
+          <h2 className="text-4xl font-bold mt-6 text-black">
             ₹ {product.price}
           </h2>
 
-          <p className="mt-4 text-lg">
+          <p className="mt-4 text-lg font-semibold">
+            Category: {product.category}
+          </p>
+
+          <p className="mt-2 text-lg font-semibold">
             Stock: {product.stock}
           </p>
 
+          {/* Buttons */}
           <div className="flex gap-5 mt-8">
 
             <button
-              onClick={addToCart}
-              className="bg-black text-white px-6 py-3 rounded-2xl text-lg font-bold hover:bg-gray-800 transition duration-300"
+              onClick={handleBuyNow}
+              className="bg-green-600 text-white px-6 py-3 rounded-2xl text-lg font-bold hover:bg-green-700 hover:scale-105 transition duration-300"
             >
-              Add To Cart
+              Buy Now
             </button>
 
             <button
-             onClick={() => navigate("/checkout")}
-              className="bg-green-600 text-white px-6 py-3 rounded-2xl text-lg font-bold hover:bg-green-700 transition duration-300"
+              onClick={addToCart}
+              className="bg-black text-white px-6 py-3 rounded-2xl text-lg font-bold hover:bg-gray-800 hover:scale-105 transition duration-300"
             >
-              Buy Now
+              Add To Cart
             </button>
 
           </div>
