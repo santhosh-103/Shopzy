@@ -1,9 +1,12 @@
+
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import API from "../services/api";
 
 function CartPage() {
   const [cartItems, setCartItems] = useState([]);
+  const navigate = useNavigate();
 
   // Fetch Cart
   const fetchCart = async () => {
@@ -119,7 +122,7 @@ function CartPage() {
           </div>
 
           <button
-            onClick={handleBuyNow}
+           onClick={() => navigate("/checkout")}
             className="bg-green-600 text-white py-4 rounded-2xl text-xl font-bold hover:bg-green-700 transition duration-300"
           >
             Buy Now

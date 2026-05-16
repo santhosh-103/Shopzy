@@ -1,7 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import API from "../services/api";
 
 function CheckoutPage() {
+  const navigate = useNavigate();
+
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [shippingAddress, setShippingAddress] =
     useState("");
 
@@ -46,6 +52,8 @@ function CheckoutPage() {
           totalPrice,
           shippingAddress,
           paymentMethod,
+          name,
+          phone,
         },
         {
           headers: {
@@ -54,19 +62,24 @@ function CheckoutPage() {
         }
       );
 
-      alert(data.message);
+      toast.success(data.message);
+
+      navigate("/orders");
+
     } catch (error) {
       console.log(error);
+
+      toast.error("Order Failed");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-center">
+    <div className="min-h-screen bg-gray-100 flex justify-center items-center p-5">
 
-      <div className="bg-white p-10 rounded-2xl shadow-lg w-[500px]">
+      <div className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-lg">
 
-        <h1 className="text-3xl font-bold mb-8 text-center">
-          Checkout
+        <h1 className="text-4xl font-bold mb-8 text-center">
+          Checkout 🛍️
         </h1>
 
         <form
@@ -76,16 +89,38 @@ function CheckoutPage() {
 
           <input
             type="text"
+            placeholder="Enter Full Name"
+            className="border p-4 rounded-xl outline-none"
+            value={name}
+            onChange={(e) =>
+              setName(e.target.value)
+            }
+            required
+          />
+
+          <input
+            type="text"
+            placeholder="Enter Phone Number"
+            className="border p-4 rounded-xl outline-none"
+            value={phone}
+            onChange={(e) =>
+              setPhone(e.target.value)
+            }
+            required
+          />
+
+          <textarea
             placeholder="Enter Shipping Address"
-            className="border p-3 rounded-xl outline-none"
+            className="border p-4 rounded-xl outline-none h-32"
             value={shippingAddress}
             onChange={(e) =>
               setShippingAddress(e.target.value)
             }
+            required
           />
 
           <select
-            className="border p-3 rounded-xl outline-none"
+            className="border p-4 rounded-xl outline-none"
             value={paymentMethod}
             onChange={(e) =>
               setPaymentMethod(e.target.value)
@@ -100,10 +135,16 @@ function CheckoutPage() {
               Online Payment
             </option>
 
+            <option value="UPI">
+              UPI Payment
+            </option>
+
           </select>
 
-          <button className="bg-black text-white py-3 rounded-xl hover:bg-gray-800">
+          <button className="bg-black text-white py-4 rounded-xl text-lg font-bold hover:bg-gray-800 transition duration-300">
+
             Place Order
+
           </button>
 
         </form>

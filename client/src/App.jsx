@@ -44,6 +44,10 @@ function App() {
   }
 /> 
 <Route
+  path="/checkout"
+  element={<CheckoutPage />}
+/>
+<Route
   path="/orders"
   element={
     <ProtectedRoute>

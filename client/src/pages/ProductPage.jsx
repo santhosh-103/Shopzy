@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import API from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 function ProductPage() {
   const { id } = useParams();
-
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
 
   // Fetch Product
@@ -101,7 +102,7 @@ function ProductPage() {
             </button>
 
             <button
-              onClick={handleBuyNow}
+             onClick={() => navigate("/checkout")}
               className="bg-green-600 text-white px-6 py-3 rounded-2xl text-lg font-bold hover:bg-green-700 transition duration-300"
             >
               Buy Now
