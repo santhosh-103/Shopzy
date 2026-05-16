@@ -41,6 +41,11 @@ function CartPage() {
     }
   };
 
+  // Buy Now
+  const handleBuyNow = () => {
+    toast.success("Order Placed Successfully 🎉");
+  };
+
   useEffect(() => {
     fetchCart();
   }, []);
@@ -112,6 +117,13 @@ function CartPage() {
             Total: ₹ {totalPrice}
 
           </div>
+
+          <button
+            onClick={handleBuyNow}
+            className="bg-green-600 text-white py-4 rounded-2xl text-xl font-bold hover:bg-green-700 transition duration-300"
+          >
+            Buy Now
+          </button>
 
         </div>
 
